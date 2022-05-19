@@ -1,0 +1,142 @@
+name: create uffizzi preview environment
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - staging
+      - qa
+
+jobs:
+  build-vote:
+    name: Build and Push `vote`
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Checkout git repo
+        uses: actions/checkout@v3
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: uffizzi/kubecon-eu-2022-vote
+      - name: Build and Push Image to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: ./vote
+
+  build-worker:
+    name: Build and Push `worker`
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Checkout git repo
+        uses: actions/checkout@v3
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: uffizzi/kubecon-eu-2022-worker
+      - name: Build and Push Image to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: ./worker
+
+  build-result:
+    name: Build and Push `result`
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Checkout git repo
+        uses: actions/checkout@v3
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: uffizzi/kubecon-eu-2022-result
+      - name: Build and Push Image to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: ./result
+
+  build-loadbalancer:
+    name: Build and Push `loadbalancer`
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Checkout git repo
+        uses: actions/checkout@v3
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: uffizzi/kubecon-eu-2022-loadbalancer
+      - name: Build and Push Image to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: ./loadbalancer
+
+  update-preview:
+    name: Update Uffizzi Preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find comment for deployment URL
+        uses: peter-evans/find-comment@v2
+        id: find-comment
+        if: github.event_name == 'pull_request'
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Uffizzi Preview deployed
+      - name: Output deployment ID
+        id: preview
+        run: 'echo ''${{ steps.find-comment.outputs.comment-body }}'' | sed -n "s/Uffizzi Preview ID: \`\(\S*\)\`/::set-output name=id::\1/p"'
+      - name: DEBUG - Echo deployment ID
+        run: 'echo ${{ steps.preview.outputs.id }}'
+      - name: Update Preview from Uffizzi
+        uses: UffizziCloud/update-preview-action@main
+        if: ${{ steps.preview.outputs.id != null }}
+        with:
+          id: ${{ steps.preview.outputs.id }}
+          compose-file: 'docker-compose.rendered.yml'
+          username: user@uffizzi.com
+          server: https://temp-2022-04.uffizzicloud.com/
+          project: default
+          password: ${{ secrets.UFFIZZI_PASSWORD }}
