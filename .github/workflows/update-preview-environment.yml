@@ -1,13 +1,7 @@
 name: update uffizzi preview environment
 
 on:
-  push:
-    branches:
-      - main
-      - master
-      - staging
-      - qa
-      - feature/*
+  pull_request
 
 jobs:
   build-vote:
