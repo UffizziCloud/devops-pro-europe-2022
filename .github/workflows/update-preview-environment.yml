@@ -137,7 +137,7 @@ jobs:
         if: ${{ steps.preview.outputs.id != null }}
         with:
           preview-id: ${{ steps.preview.outputs.id }}
-          compose-file: 'docker-compose.rendered.yml'
+          compose-file: 'docker-compose.uffizzi.yml'
           username: user@uffizzi.com
           server: https://temp-2022-04.uffizzicloud.com/
           project: default
