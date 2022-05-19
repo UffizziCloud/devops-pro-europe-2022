@@ -120,6 +120,9 @@ jobs:
     steps:
       - name: PR Number
         run: 'echo ${{ github.event.pull_request.number }}'
+        run: 'echo ${{ github.event.number }}'
+        run: 'echo ${{ $GITHUB_REF }}'
+        run: 'echo ${{ $GITHUB_CONTEXT }}'
       - name: Find comment for deployment URL
         uses: peter-evans/find-comment@v2
         id: find-comment
@@ -136,7 +139,7 @@ jobs:
         uses: UffizziCloud/update-preview-action@main
         if: ${{ steps.preview.outputs.id != null }}
         with:
-          id: ${{ steps.preview.outputs.id }}
+          preview-id: ${{ steps.preview.outputs.id }}
           compose-file: 'docker-compose.rendered.yml'
           username: user@uffizzi.com
           server: https://temp-2022-04.uffizzicloud.com/
