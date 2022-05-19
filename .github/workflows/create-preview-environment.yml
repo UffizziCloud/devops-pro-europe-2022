@@ -8,7 +8,7 @@ on:
       - staging
       - qa
   pull_request:
-    types: [opened,synchronize,reopened]
+    types: [opened,reopened]
 
 jobs:
   build-vote:
