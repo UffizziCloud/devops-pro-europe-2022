@@ -118,12 +118,8 @@ jobs:
     name: Update Uffizzi Preview
     runs-on: ubuntu-latest
     steps:
-      - name: PR Number
-        run: 'echo ${{ github.event.nunmber }}'
-      - name: PR Ref
-        run: 'echo ${{ $GITHUB_REF }}'
       - name: PR Context
-        run: 'echo ${{ $GITHUB_CONTEXT }}'
+        run: echo '${{ toJSON(github) }}'
       - name: Find comment for deployment URL
         uses: peter-evans/find-comment@v2
         id: find-comment
