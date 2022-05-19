@@ -1,4 +1,4 @@
-name: create uffizzi preview environment
+name: update uffizzi preview environment
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
       - master
       - staging
       - qa
+      - feature/*
 
 jobs:
   build-vote:
