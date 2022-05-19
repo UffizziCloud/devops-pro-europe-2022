@@ -1,7 +1,8 @@
 name: update uffizzi preview environment
 
 on:
-  pull_request
+  pull_request:
+    types: [synchronize]
 
 jobs:
   build-vote:
@@ -139,7 +140,7 @@ jobs:
         uses: peter-evans/find-comment@v2
         id: find-comment
         with:
-          issue-number: 5
+          issue-number: ${{ github.event.number }}
           comment-author: 'github-actions[bot]'
           body-includes: Preview
       - name: Output deployment ID
