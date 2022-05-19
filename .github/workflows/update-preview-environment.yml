@@ -149,15 +149,16 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: Preview
       - name: Output deployment ID
-        id: preview
+        id: comment
         run: 'echo ''${{ steps.find-comment.outputs.comment-body }}'' | sed -n "s/Uffizzi Preview ID: \`\(\S*\)\`/::set-output name=id::\1/p"'
       - name: DEBUG - Echo deployment ID
-        run: 'echo ${{ steps.preview.outputs.id }}'
+        run: 'echo ${{ steps.comment.outputs.id }}'
       - name: Update Preview from Uffizzi
-        uses: UffizziCloud/update-preview-action@main
-        if: ${{ steps.preview.outputs.id != null }}
+        uses: UffizziCloud/update-preview-action@v1
+        id: preview
+        if: ${{ steps.comment.outputs.id != null }}
         with:
-          preview-id: ${{ steps.preview.outputs.id }}
+          preview-id: ${{ steps.comment.outputs.id }}
           compose-file: 'docker-compose.rendered.yml'
           username: user@uffizzi.com
           server: https://temp-2022-04.uffizzicloud.com/
