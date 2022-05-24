@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: uffizzi/kubecon-eu-2022-vote
+          images: uffizzi/devops-pro-europe-2022-vote
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v2
         with:
@@ -48,7 +48,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: uffizzi/kubecon-eu-2022-worker
+          images: uffizzi/devops-pro-europe-2022-worker
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v2
         with:
@@ -74,7 +74,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: uffizzi/kubecon-eu-2022-result
+          images: uffizzi/devops-pro-europe-2022-result
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v2
         with:
@@ -100,7 +100,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: uffizzi/kubecon-eu-2022-loadbalancer
+          images: uffizzi/devops-pro-europe-2022-loadbalancer
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v2
         with:
@@ -154,7 +154,7 @@ jobs:
           preview-id: ${{ steps.comment.outputs.id }}
           compose-file: 'docker-compose.rendered.yml'
           username: user@uffizzi.com
-          server: https://temp-2022-04.uffizzicloud.com/
+          server: https://devops-pro-europe-2022.uffizzicloud.com/
           project: default
           password: ${{ secrets.UFFIZZI_PASSWORD }}
       - name: Check outputs
