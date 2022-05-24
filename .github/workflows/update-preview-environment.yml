@@ -153,7 +153,7 @@ jobs:
         with:
           preview-id: ${{ steps.comment.outputs.id }}
           compose-file: 'docker-compose.rendered.yml'
-          username: user@uffizzi.com
+          username: admin@uffizzicloud.com
           server: https://devops-pro-europe-2022.uffizzicloud.com/
           project: default
           password: ${{ secrets.UFFIZZI_PASSWORD }}
