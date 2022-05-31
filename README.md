@@ -1,3 +1,6 @@
+Testing CLI compatibility with Uffizzi Cloud platform.  
+
+
 Example Voting App
 =========
 
