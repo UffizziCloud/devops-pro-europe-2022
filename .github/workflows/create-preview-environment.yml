@@ -124,7 +124,7 @@ jobs:
       - build-result
       - build-loadbalancer
     outputs:
-      compose-file: docker-compose.rendered.yml
+      compose-file-cache-key: ${{ steps.hash.outputs.hash }}
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v3
@@ -141,6 +141,14 @@ jobs:
           # Render simple template from environment variables.
           envsubst < docker-compose.template.yml > docker-compose.rendered.yml
           cat docker-compose.rendered.yml
+      - name: Hash Rendered Compose File
+        id: hash
+        run: echo '::set-output name=hash::$(md5sum docker-compose.rendered.yml)'
+      - name: Cache Rendered Compose File
+        uses: actions/cache@v3
+        with:
+          path: docker-compose.rendered.yml
+          key: ${{ steps.hash.outputs.hash }}
 
   deploy-uffizzi-preview:
     name: Use Remote Workflow to Preview on Uffizzi
@@ -148,7 +156,7 @@ jobs:
     needs: render-compose-file
     uses: UffizziCloud/preview-action/.github/workflows/create-example.yaml@reusable-workflow
     with:
-      compose-file: ${{ needs.render-compose-file.outputs.compose-file }}
+      compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
       username: admin@uffizzicloud.com
       server: https://devops-pro-europe-2022.uffizzicloud.com/
       project: default
