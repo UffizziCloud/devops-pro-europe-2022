@@ -140,40 +140,15 @@ jobs:
           # Render simple template from environment variables.
           envsubst < docker-compose.template.yml > docker-compose.rendered.yml
           cat docker-compose.rendered.yml
-      - name: Deploy preview
-        id: preview
-        uses: UffizziCloud/preview-action@latest
+      - name: Use Remote Workflow to Deploy
+        uses: UffizziCloud/preview-action/.github/workflows/create-example.yaml@reusable-workflow
         with:
           compose-file: 'docker-compose.rendered.yml'
           username: admin@uffizzicloud.com
           server: https://devops-pro-europe-2022.uffizzicloud.com/
           project: default
+        secrets:
           password: ${{ secrets.UFFIZZI_PASSWORD }}
-      - name: Check outputs
-        run: echo "${{ steps.preview.outputs.id }} at ${{ steps.preview.outputs.url }}"
-      - name: Confirm Successful Preview Deployment
-        uses: docker://curlimages/curl:7.82.0
-        with:
-          args: --retry 12 --retry-all-errors --retry-delay 0 --fail --location ${{ steps.preview.outputs.url }}
-
-      # If PR, put deployment URL and ID in the PR comments
-      - name: Find comment for deployment URL
-        uses: peter-evans/find-comment@v1
-        if: github.event_name == 'pull_request'
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Uffizzi Preview deployed
-      - name: Create or update comment for deployment URL
-        uses: peter-evans/create-or-update-comment@v1
-        if: github.event_name == 'pull_request'
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Uffizzi Preview deployed:
-            ${{ steps.preview.outputs.url }}
-
-            Uffizzi Preview ID: `${{ steps.preview.outputs.id }}`
-          edit-mode: replace
+        permissions:
+          contents: read
+          pull-requests: write
