@@ -144,9 +144,8 @@ jobs:
           cat docker-compose.rendered.yml
 
   deploy-uffizzi-preview:
-    name: Preview on Uffizzi
+    name: Use Remote Workflow to Preview on Uffizzi
     if: github.event_name == 'pull_request'
-    name: Use Remote Workflow to Deploy
     needs: render-compose-file
     uses: UffizziCloud/preview-action/.github/workflows/create-example.yaml@reusable-workflow
     with:
