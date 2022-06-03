@@ -117,7 +117,6 @@ jobs:
 
   render-compose-file:
     name: Render Docker Compose File
-    id: render-compose-file
     runs-on: ubuntu-latest
     needs: 
       - build-vote
