@@ -143,7 +143,7 @@ jobs:
           cat docker-compose.rendered.yml
       - name: Hash Rendered Compose File
         id: hash
-        run: echo "::set-output name=hash::$(md5sum docker-compose.rendered.yml)"
+        run: echo "::set-output name=hash::$(md5sum docker-compose.rendered.yml | awk '{ print $1 }')"
       - name: Cache Rendered Compose File
         uses: actions/cache@v3
         with:
