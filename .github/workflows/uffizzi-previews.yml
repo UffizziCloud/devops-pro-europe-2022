@@ -1,4 +1,4 @@
-name: Build Images and Preview on Uffizzi
+name: Build Images and Handle Uffizzi Previews.
 
 on:
   push:
