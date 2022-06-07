@@ -1,4 +1,4 @@
-name: create uffizzi preview environment
+name: Build Images and Preview on Uffizzi
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - staging
       - qa
   pull_request:
-    types: [opened,reopened]
+    types: [opened,reopened,synchronize,closed]
 
 jobs:
   build-vote:
@@ -152,9 +152,8 @@ jobs:
 
   deploy-uffizzi-preview:
     name: Use Remote Workflow to Preview on Uffizzi
-    if: github.event_name == 'pull_request'
     needs: render-compose-file
-    uses: UffizziCloud/preview-action/.github/workflows/create-example.yaml@reusable-workflow
+    uses: UffizziCloud/preview-action/.github/workflows/conditional-example.yaml@reusable-workflow
     with:
       compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
       username: admin@uffizzicloud.com
