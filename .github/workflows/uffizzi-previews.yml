@@ -156,6 +156,7 @@ jobs:
     uses: UffizziCloud/preview-action/.github/workflows/conditional-example.yaml@reusable-workflow
     with:
       compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
+      compose-file-cache-path: docker-compose.rendered.yml
       username: admin@uffizzicloud.com
       server: https://devops-pro-europe-2022.uffizzicloud.com/
       project: default
